@@ -1,0 +1,22 @@
+The context is that you're floating on this magical red carpet in an area where there are dangerous birds. The ambient sound notifies you of how fast you're floating while the alert sound notifies you of the distance of the dangerous birds.
+
+The ambient sound is important to the user because it allows the user to know if the user is floating as fast as possible when the ambient sound is on high. It also allows the user to know if there is a problem with the red carpet such as if the user is telling the carpet to go at max speed so the user expects a high ambient sound but the carpet is going at a minimum speed so the user is hearing a low ambient sound.
+
+To create the different levels of ambient sound, I manipulated the frequency and the vibrato speed. As the ambient sound's priority increased, frequency increased. This is based off the MARTA train leaving the station; the faster it goes, the higher the pitch of the sound the train makes. As the ambient sound's priority increased, the vibrato speed increased. This is to increase how fast the floating sound occurs.
+
+The alert sound is important because it lets the user know the distance of the dangerous birds which helps the user know how much time is left until the birds reach the user or if the user is going fast enough.
+
+To create the different levels of alert sound, I manipulated punch, attack time, frequency, vibrato speed, vibrato depth, and volume. I increased punch and decreased attack time as priority increased to add a feeling of more urgency to the sound. I increased frequency as priority increased to imitate the Doppler effect. I increased vibrato speed and depth as priority increased to make each "bird chirp" clearer. At the low alert sound, I tried to make the bird chirping a blur of sound instead of distinct "chirps". I increased volume as priority increased, because the closer something is, the louder it is.
+
+Low Ambient: 2,1,,1,,,,0.195,,,,0.275,0.1,,,,-1,,,,,,,,,1,,,,,,,masterVolume
+Medium Ambient: 2,1,,1,,,,0.23,,,,0.275,0.11,,,,-1,,,,,,,,,1,,,,,,,masterVolume
+High Ambient: 2,1,,1,,,,0.33,,,,0.275,0.165,,,,-1,,,,,,,,,1,,,,,,,masterVolume
+
+Low Alert:
+2,0.49,0.1,0.54,,0.1,,0.715,,-0.045,-0.03,0.12,0.355,,,0.64,,,,,,,,0.725,-0.045,0.98,-0.0999,,,,,,masterVolume
+Medium Alert:
+2,0.49,0.1,0.54,0.39,0.1,,0.735,,-0.045,-0.03,0.36,0.415,,,0.64,,,,,,,,0.725,-0.045,1,,,,,,,masterVolume
+High Alert:
+2,0.49,0.065,0.54,0.825,0.1,,0.76,,-0.045,-0.03,0.36,0.415,,,0.64,,,,,,,,0.725,-0.03,1,,,,,,,masterVolume
+
+I also performed some (crude) ducking and control over the gain of the ambient noise.
