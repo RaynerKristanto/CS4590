@@ -1,0 +1,13 @@
+Class Exercise #3
+
+Name: Rayner Kristanto
+
+Describe how your performed your ducking and any challenges you faced:
+When a voice is playing, I reduce the gain of the background music to 0.3. 
+
+The most challenging part of this assignment was trying to handle the case when a voice is playing, but the user plays another voice. The problem was that the background music’s gain became 1 when the second voice started to play. I believe this is because my end listener’s bead occurs after all my code in my mousePressed event handler has already happened (I decreased the background music’s gain in my mousePressed event handler). I fixed this by pausing the bead in the mousePressed event handler so it does not execute.
+
+
+
+
+
