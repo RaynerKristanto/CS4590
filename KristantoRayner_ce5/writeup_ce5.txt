@@ -1,0 +1,25 @@
+Class Exercise #5
+
+Name: Rayner Kristanto
+
+Describe any challenges you faced as well as any extra polish you applied (for the extra points):
+
+Challenge 
+I created a button with the following line of code:
+
+	Stop = p5.addButton(“stop”).setLabel(“Stop”);
+	
+When I pressed this button in the window, the window would freeze, and I would have to close it. However, when I tried clicking other buttons, the problem did not happen. I replaced the above code with 
+	
+	s = p5.addButton(“s”).setLabel(“Stop”); 
+
+and the button worked fine.
+
+Polish
+Every time a button is pressed, a click sound is played. This click sound goes through the Glide UGen which randomly sets the rate of the sound for the next time it is played.
+
+Sound Citations
+Music: AKMU - RE-BYE
+Clicks: http://www.freesound.org/people/Fats%20Million/sounds/187779/
+
+
