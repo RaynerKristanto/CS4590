@@ -1,7 +1,7 @@
 import controlP5.*;
 import beads.*;
 import org.jaudiolibs.beads.*;
-
+import java.util.List;
 ControlP5 p5;
 
 Button context1;
@@ -27,7 +27,22 @@ SamplePlayer walking;
 SamplePlayer socializing;
 SamplePlayer presenting;
 
+String eventDataJSON1 = "ExampleData_1.json";
+String eventDataJSON2 = "ExampleData_2.json";
+String eventDataJSON3 = "ExampleData_3.json";
+
+NotificationServer server;
+ArrayList<Notification> notifications;
+
+NotificationHandler handler;
+
+ArrayList<NotificationType> filters;
 void setup() {
+  // Loading JSON
+  server = new NotificationServer();
+  handler = new NotificationHandler();
+  server.addListener(handler);
+  
   // Sound
   ac = new AudioContext();
   workingout = getSamplePlayer("workout.wav");
@@ -45,6 +60,7 @@ void setup() {
   socializing.pause(true);
   presenting.pause(true);
   ac.start();
+  
   // User Interface
   size(370, 250);
   fill(color(100, 100, 100));
@@ -101,11 +117,42 @@ void setup() {
 
 void draw() {
 }
+NotificationType[] notifTypes = NotificationType.values();
+
 void mousePressed() {
-  workingout.pause(true);
-  walking.pause(true);
-  socializing.pause(true);
-  presenting.pause(true);
+  // Events Checkboxes
+  List<Toggle> eventList = events.getItems();
+  ArrayList<NotificationType> temp = new ArrayList<NotificationType>();
+  
+  for (int i = 0; i < eventList.size(); i++) {
+    if(eventList.get(i).getState()) {
+      temp.add(notifTypes[i]);
+    }
+  }
+  filters = temp;
+  server.setFilters(filters);
+  
+  // Eventstream Buttons
+  if (eventstream1.isPressed()) {
+    server.stopEventStream();
+    server.loadEventStream(eventDataJSON1);
+  }
+  if (eventstream2.isPressed()) {
+    server.stopEventStream();
+    server.loadEventStream(eventDataJSON2);
+  }
+  if (eventstream3.isPressed()) {
+    server.stopEventStream();
+    server.loadEventStream(eventDataJSON3);
+  }
+  
+  // Context Buttons
+  if (context1.isPressed() || context2.isPressed() || context3.isPressed() || context4.isPressed()) {
+    workingout.pause(true);
+    walking.pause(true);
+    socializing.pause(true);
+    presenting.pause(true);
+  }
   if (context1.isPressed()) {
     workingout.pause(false);
   }
