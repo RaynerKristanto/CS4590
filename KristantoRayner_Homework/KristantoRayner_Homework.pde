@@ -26,6 +26,7 @@ SamplePlayer workingout;
 SamplePlayer walking;
 SamplePlayer socializing;
 SamplePlayer presenting;
+SamplePlayer heartbeating;
 
 String eventDataJSON1 = "ExampleData_1.json";
 String eventDataJSON2 = "ExampleData_2.json";
@@ -38,27 +39,37 @@ NotificationHandler handler;
 
 ArrayList<NotificationType> filters;
 void setup() {
+  ac = new AudioContext();
   // Loading JSON
   server = new NotificationServer();
-  handler = new NotificationHandler();
+  handler = new NotificationHandler(ac);
   server.addListener(handler);
   
   // Sound
-  ac = new AudioContext();
+  
   workingout = getSamplePlayer("workout.wav");
   walking = getSamplePlayer("walking.wav");
   socializing = getSamplePlayer("conversation.wav");
   presenting = getSamplePlayer("presentation.wav");
+  heartbeating = getSamplePlayer("heartbeat.wav");
+  
+  workingout.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+  walking.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+  socializing.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+  presenting.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+  heartbeating.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
   
   ac.out.addInput(workingout);
   ac.out.addInput(walking);
   ac.out.addInput(socializing);
   ac.out.addInput(presenting);
+  ac.out.addInput(heartbeating);
   
   workingout.pause(true);
   walking.pause(true);
   socializing.pause(true);
   presenting.pause(true);
+  heartbeating.pause(true);
   ac.start();
   
   // User Interface
@@ -118,8 +129,17 @@ void setup() {
 void draw() {
 }
 NotificationType[] notifTypes = NotificationType.values();
-
+int counter = 0;
 void mousePressed() {
+  // Heartbeat Button
+  if (heartbeat.isPressed()) {
+    if (counter % 2 == 0) { 
+      heartbeating.pause(false);
+    } else {
+      heartbeating.pause(true);
+    }
+    counter++;
+  }
   // Events Checkboxes
   List<Toggle> eventList = events.getItems();
   ArrayList<NotificationType> temp = new ArrayList<NotificationType>();

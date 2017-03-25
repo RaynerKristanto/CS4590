@@ -2,15 +2,20 @@
 // This class plays each notification's respective sound, and spaces the sounds if necessary
 
 class NotificationHandler implements NotificationListener {
+  SamplePlayer tweet = getSamplePlayer("tweet.wav");
   
-  public NotificationHandler() {
+  public NotificationHandler(AudioContext ac) {
+    ac.out.addInput(tweet);
+    tweet.pause(true);
   }
   
   public void notificationReceived(Notification notification) {
     String debugOutput = "";
+    tweet.setPosition(0);
     switch (notification.getType()) {
       case Tweet:
         debugOutput += "New tweet from ";
+        tweet.pause(false);
         break;
       case Email:
         debugOutput += "New email from ";
