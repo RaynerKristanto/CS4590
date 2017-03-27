@@ -175,14 +175,18 @@ void mousePressed() {
   }
   if (context1.isPressed()) {
     workingout.pause(false);
+    handler.setContext(1);
   }
   if (context2.isPressed()) {
     walking.pause(false);
+    handler.setContext(2);
   }
   if (context3.isPressed()) {
     socializing.pause(false);
+    handler.setContext(3);
   }
   if (context4.isPressed()) {
     presenting.pause(false);
+    handler.setContext(4);
   }
 }
