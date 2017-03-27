@@ -151,6 +151,7 @@ void mousePressed() {
   }
   filters = temp;
   server.setFilters(filters);
+
   
   // Eventstream Buttons
   if (eventstream1.isPressed()) {

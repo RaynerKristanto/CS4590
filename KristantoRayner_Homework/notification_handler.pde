@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 class NotificationHandler implements NotificationListener {
   SamplePlayer tweet = getSamplePlayer("tweet.wav");
+  SamplePlayer text = getSamplePlayer("text.wav");
+  SamplePlayer email = getSamplePlayer("email.wav");
   TextToSpeechMaker ttsMaker;
   boolean playing = false;
   Integer context = 0;
@@ -11,7 +13,11 @@ class NotificationHandler implements NotificationListener {
   LinkedList<SamplePlayer> ttsQueue = new LinkedList<SamplePlayer>();
   public NotificationHandler(AudioContext ac) {
     ac.out.addInput(tweet);
+    ac.out.addInput(text);
+    ac.out.addInput(email);
     tweet.pause(true);
+    text.pause(true);
+    email.pause(true);
     ttsMaker = new TextToSpeechMaker();
   }
   public void setContext(Integer context) {
@@ -20,6 +26,11 @@ class NotificationHandler implements NotificationListener {
   public void notificationReceived(Notification notification) {
     String debugOutput = "";
     tweet.setPosition(0);
+    text.setPosition(0);
+    email.setPosition(0);
+    tweet.pause(true);
+    text.pause(true);
+    email.pause(true);
     if (context == 0) {
       println("Please select a context!");
       return;
@@ -37,11 +48,16 @@ class NotificationHandler implements NotificationListener {
           tts = tts + notification.getRetweets() + " retweets. " + notification.getFavorites() + " favorites.";
           ttsPlayback(tts);
           println(tts);
+          break;
         case Email:
+        break;
         case VoiceMail:
+        break;
         case MissedCall:
           ring();
+          break;
         case TextMessage:
+        break;
       }
     } else if (context == 2) {
       switch (notification.getType()) {
@@ -67,8 +83,10 @@ class NotificationHandler implements NotificationListener {
       switch (notification.getType()) {
         case Tweet:
           debugOutput += "New tweet from ";
-          tweet.pause(false);
-          if (notification.getPriorityLevel() > 2) {
+          if (notification.getPriorityLevel() > 1) {
+            tweet.pause(false);
+          }
+          if (notification.getPriorityLevel() > 3) {
             try {
               TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
@@ -80,16 +98,63 @@ class NotificationHandler implements NotificationListener {
           break;
         case Email:
           debugOutput += "New email from ";
-          ttsPlayback(notification.getMessage());
+          if (notification.getPriorityLevel() > 1) {
+            email.pause(false);
+          }
+          if (notification.getPriorityLevel() > 3) {
+           try {
+              TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+            }
+            String tts = "From " + notification.getSender();
+            ttsPlayback(tts);
+          } 
           break;
         case VoiceMail:
           debugOutput += "New voicemail from ";
+          if (notification.getPriorityLevel() > 1) {
+            voicemail();
+          }
+          if (notification.getPriorityLevel() > 3) {
+            try {
+              TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+            }
+            String tts = "From " + notification.getSender();
+            ttsPlayback(tts);
+          }
           break;
         case MissedCall:
           debugOutput += "Missed call from ";
+          if (notification.getPriorityLevel() > 1) {
+            ring();
+          }
+          if (notification.getPriorityLevel() > 3) {
+            try {
+              TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+            }
+            String tts = "From " + notification.getSender();
+            ttsPlayback(tts);
+          }
           break;
         case TextMessage:
           debugOutput += "New message from ";
+          if (notification.getPriorityLevel() > 1) {
+            text.pause(false);
+          }
+          if (notification.getPriorityLevel() > 3) {
+            try {
+              TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+            }
+            String tts = "From " + notification.getSender();
+            ttsPlayback(tts);
+          }
           break;
       }
     } else if (context == 4) {
@@ -102,7 +167,9 @@ class NotificationHandler implements NotificationListener {
           break;
         case Email:
           debugOutput += "New email from ";
-         
+          if (notification.getPriorityLevel() > 3) {
+            email.pause(false);
+          }
           break;
         case VoiceMail:
           debugOutput += "New voicemail from ";
@@ -132,13 +199,22 @@ class NotificationHandler implements NotificationListener {
           break;
         case TextMessage:
           debugOutput += "New message from ";
+          if (notification.getPriorityLevel() > 3) {
+            text.pause(false);
+            //try {
+            //  TimeUnit.SECONDS.sleep(1);
+            //} catch (InterruptedException e) {
+            //  Thread.currentThread().interrupt();
+            //}
+            //text.pause(true);
+          }
           break;
       }
     }
     debugOutput += notification.getSender() + ", " + notification.getMessage();
     
     println(debugOutput);
-    }
+  }
   public void voicemail() {
     int time = 100;
     WavePlayer wp = new WavePlayer(ac, 1396.91, Buffer.SINE);
@@ -171,7 +247,7 @@ class NotificationHandler implements NotificationListener {
     ac.out.addInput(wp);
     ac.out.addInput(wp2);
     wp2.pause(true);
-    while (counter < 10) {
+    while (counter < 5) {
       wp.pause(true);
       wp2.pause(false);
       try {
