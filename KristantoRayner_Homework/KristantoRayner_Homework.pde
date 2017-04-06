@@ -16,7 +16,7 @@ Button eventstream2;
 Button eventstream3;
 
 Button heartbeat;
-
+Button review;
 Textlabel contextLabel;
 Textlabel eventsLabel;
 Textlabel eventstreamLabel;
@@ -27,7 +27,8 @@ SamplePlayer walking;
 SamplePlayer socializing;
 SamplePlayer presenting;
 SamplePlayer heartbeating;
-
+Gain heartbeat_volume;
+Gain present_volume;
 String eventDataJSON1 = "ExampleData_1.json";
 String eventDataJSON2 = "ExampleData_2.json";
 String eventDataJSON3 = "ExampleData_3.json";
@@ -53,6 +54,12 @@ void setup() {
   presenting = getSamplePlayer("presentation.wav");
   heartbeating = getSamplePlayer("heartbeat.wav");
   
+  present_volume = new Gain(ac, 1);
+  present_volume.addInput(presenting);
+  present_volume.setGain(2);
+  heartbeat_volume = new Gain(ac, 1);
+  heartbeat_volume.addInput(heartbeating);
+  heartbeat_volume.setGain(.5);
   workingout.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
   walking.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
   socializing.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
@@ -62,14 +69,14 @@ void setup() {
   ac.out.addInput(workingout);
   ac.out.addInput(walking);
   ac.out.addInput(socializing);
-  ac.out.addInput(presenting);
-  ac.out.addInput(heartbeating);
+  ac.out.addInput(present_volume);
+  ac.out.addInput(heartbeat_volume);
   
   workingout.pause(true);
   walking.pause(true);
   socializing.pause(true);
-  presenting.pause(true);
-  heartbeating.pause(true);
+  present_volume.pause(true);
+  heartbeat_volume.pause(true);
   ac.start();
   
   // User Interface
@@ -124,19 +131,30 @@ void setup() {
   heartbeat = p5.addButton("heartbeat")
                 .setPosition(110, 183)
                 .setLabel("Heartbeat");
+  rect(200, 170, 80, 45);
+  review = p5.addButton("review")
+             .setPosition(205, 183)
+             .setLabel("Review");
 }
 
 void draw() {
+  // Needed for buttons to highlight when hovered over. Important user feedback
 }
 NotificationType[] notifTypes = NotificationType.values();
 int counter = 0;
 void mousePressed() {
+  // Review Button
+  if (review.isPressed()) {
+    server.stopEventStream();
+    server.replayEventStream();
+    handler.setContext(5);
+  }
   // Heartbeat Button
   if (heartbeat.isPressed()) {
     if (counter % 2 == 0) { 
-      heartbeating.pause(false);
+      heartbeat_volume.pause(false);
     } else {
-      heartbeating.pause(true);
+      heartbeat_volume.pause(true);
     }
     counter++;
   }
@@ -169,10 +187,11 @@ void mousePressed() {
   
   // Context Buttons
   if (context1.isPressed() || context2.isPressed() || context3.isPressed() || context4.isPressed()) {
+    handler.reset();
     workingout.pause(true);
     walking.pause(true);
     socializing.pause(true);
-    presenting.pause(true);
+    present_volume.pause(true);
   }
   if (context1.isPressed()) {
     workingout.pause(false);
@@ -187,7 +206,7 @@ void mousePressed() {
     handler.setContext(3);
   }
   if (context4.isPressed()) {
-    presenting.pause(false);
+    present_volume.pause(false);
     handler.setContext(4);
   }
 }

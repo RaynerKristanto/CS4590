@@ -82,4 +82,24 @@ class Notification {
       output += " " + getMessage();
       return output;
     }
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof Notification)) {
+      return false;
+    }
+    Notification obj2 = (Notification) obj;
+    if (this.getTimestamp() != obj2.getTimestamp()) {
+      return false;
+    }
+    if (this.getSender() != obj2.getSender()) {
+      return false;
+    }
+    if (this.getType() != obj2.getType()) {
+      return false;
+    }
+    return true;
+  }
 }

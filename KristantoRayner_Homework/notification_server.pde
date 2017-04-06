@@ -13,6 +13,7 @@ class NotificationServer {
   private ArrayList<NotificationListener> listeners;
   private ArrayList<Notification> currentNotifications;
   private ArrayList<NotificationType> filters;
+
   public NotificationServer() {
     timer = new Timer();
     listeners = new ArrayList<NotificationListener>();
@@ -31,7 +32,15 @@ class NotificationServer {
     for (int i = 0; i < currentNotifications.size(); i++) {
       this.scheduleTask(currentNotifications.get(i));
     }
-    
+  }
+  public void replayEventStream() {
+    if (currentNotifications.size() == 0) {
+      println("Please play an event stream first");
+      return;
+    }
+    for (int i = 0; i < currentNotifications.size(); i++) {
+      this.rescheduleTask(currentNotifications.get(i), i * 2000);
+    }
   }
   
   public void stopEventStream() {
@@ -58,7 +67,9 @@ class NotificationServer {
   public void scheduleTask(Notification notification) {
     timer.schedule(new NotificationTask(this, notification), notification.getTimestamp());
   }
-  
+  public void rescheduleTask(Notification notification, int time) {
+    timer.schedule(new NotificationTask(this, notification), time);
+  }
   public void addListener(NotificationListener listenerToAdd) {
     listeners.add(listenerToAdd);
   }
